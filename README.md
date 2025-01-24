@@ -49,4 +49,5 @@ FROM brands),
 SELECT *
 FROM cte_rn
 WHERE RN= 1 
-OR (custom1 <> custom3 AND custom2 <>custom4)```
+OR (custom1 <> custom3 AND custom2 <>custom4)
+```

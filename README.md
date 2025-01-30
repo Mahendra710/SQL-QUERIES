@@ -2,6 +2,7 @@
 ## Table of Contents
 - [Query-1](#Query-1)
 - [Query-2](#Query-2)
+- [Query-3](#Query-3)
 
 ## Query-1 
 ### PROBLEM STATEMENT
@@ -126,4 +127,50 @@ with cte_trail1 as (
 select cf1.start_hut_name as startpoint, cf1.end_hut_name as middlepoint , cf2.end_hut_name as endpoint
 from cte_final cf1
 join cte_final cf2 on cf1.end_hut = cf2.start_hut
+```
+
+## Query-3
+### STATEMENT 
+- Write a sql query to return the footer values from input table, meaning all the last non null values from each field as shown in expected output.								
+
+![image](https://github.com/user-attachments/assets/bd106eb1-df04-48af-9b01-154514f0a65a)
+
+```
+DROP TABLE IF EXISTS FOOTER;
+CREATE TABLE FOOTER 
+(
+	id 			INT PRIMARY KEY,
+	car 		VARCHAR(20), 
+	length 		INT, 
+	width 		INT, 
+	height 		INT
+);
+
+INSERT INTO FOOTER VALUES (1, 'Hyundai Tucson', 15, 6, NULL);
+INSERT INTO FOOTER VALUES (2, NULL, NULL, NULL, 20);
+INSERT INTO FOOTER VALUES (3, NULL, 12, 8, 15);
+INSERT INTO FOOTER VALUES (4, 'Toyota Rav4', NULL, 15, NULL);
+INSERT INTO FOOTER VALUES (5, 'Kia Sportage', NULL, NULL, 18); 
+
+SELECT * FROM FOOTER;
+```
+### SOLUTION 
+```
+select * from (
+			select TOP 1 car
+			from FOOTER 
+			where car is not null 
+			order by id desc) car
+cross join (select TOP 1 length
+			from FOOTER 
+			where length is not null 
+			order by id desc) length
+cross join (select TOP 1 width
+			from FOOTER 
+			where width is not null 
+			order by id desc) width
+cross join (select TOP 1 height
+			from FOOTER 
+			where height is not null 
+			order by id desc) height
 ```

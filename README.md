@@ -3,6 +3,7 @@
 - [Query-1](#Query-1)
 - [Query-2](#Query-2)
 - [Query-3](#Query-3)
+- [Query-4](#Query-4)
 
 ## Query-1 
 ### PROBLEM STATEMENT
@@ -173,4 +174,42 @@ cross join (select TOP 1 height
 			from FOOTER 
 			where height is not null 
 			order by id desc) height
+```
+
+## Query-4
+### PROBLEM STATEMENT
+```
+drop table if exists Q4_data;
+create table Q4_data
+(
+	id			int,
+	name		varchar(20),
+	location	varchar(20)
+);
+insert into Q4_data values(1,null,null);
+insert into Q4_data values(2,'David',null);
+insert into Q4_data values(3,null,'London');
+insert into Q4_data values(4,null,null);
+insert into Q4_data values(5,'David',null);
+
+select * from Q4_data;
+```
+- Derive expected output
+- EXPECTED OUTPUT - 1 \
+ ![image](https://github.com/user-attachments/assets/86e2068c-7544-4193-ad05-513b91c2f221)
+
+- EXPECTED OUTPUT - 2 \  
+![image](https://github.com/user-attachments/assets/58be4d16-4d5f-4fae-9282-00992178facc)
+
+
+### SOLUTION
+```
+--- First expected Output 
+select min(id) as ID ,min(name) as Name ,min(location) as Location
+from Q4_data
+
+---- Second Expected Output
+
+select max(id) as ID , max(name) as Name , max(location) as Location
+from Q4_data
 ```

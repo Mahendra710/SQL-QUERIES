@@ -4,6 +4,7 @@
 - [Query-2](#Query-2)
 - [Query-3](#Query-3)
 - [Query-4](#Query-4)
+- [Query-5](#Query-5)
 
 ## Query-1 
 ### PROBLEM STATEMENT
@@ -212,4 +213,120 @@ from Q4_data
 
 select max(id) as ID , max(name) as Name , max(location) as Location
 from Q4_data
+```
+
+## Query-5
+### PROBLEM STATEMENT
+- Using the given Salary, Income and Deduction tables, first write an sql query to populate the Emp_Transaction table as shown below and then generate a salary report as shown. 
+- ![image](https://github.com/user-attachments/assets/5b823671-0975-4246-b1f9-09066508046e) 
+- ![image](https://github.com/user-attachments/assets/782fdc30-f249-4eef-b94c-deda2a74f992) 
+- ![image](https://github.com/user-attachments/assets/419c0eb7-8121-4618-a9db-65c31d7ad04b)
+```
+drop table if exists salary;
+create table salary
+(
+	emp_id		int,
+	emp_name	varchar(30),
+	base_salary	int
+);
+insert into salary values(1, 'Rohan', 5000);
+insert into salary values(2, 'Alex', 6000);
+insert into salary values(3, 'Maryam', 7000);
+
+
+drop table if exists income;
+create table income
+(
+	id			int,
+	income		varchar(20),
+	percentage	int
+);
+insert into income values(1,'Basic', 100);
+insert into income values(2,'Allowance', 4);
+insert into income values(3,'Others', 6);
+
+
+drop table if exists deduction;
+create table deduction
+(
+	id			int,
+	deduction	varchar(20),
+	percentage	int
+);
+insert into deduction values(1,'Insurance', 5);
+insert into deduction values(2,'Health', 6);
+insert into deduction values(3,'House', 4);
+
+
+drop table if exists emp_transaction;
+create table emp_transaction
+(
+	emp_id		int,
+	emp_name	varchar(50),
+	trns_type	varchar(20),
+	amount		numeric
+);
+select * from salary;
+select * from income;
+select * from deduction;
+select * from emp_transaction;
+```
+
+- 
+![image](https://github.com/user-attachments/assets/4bf3d208-4acd-4818-b7b6-69714b1d03e5)
+
+-
+![image](https://github.com/user-attachments/assets/e8666999-7ac7-4039-845c-30ead5fbc9fa)
+
+### SOLUTION 
+```
+insert into emp_transaction
+SELECT 
+    s.emp_id, 
+    s.emp_name, 
+    x.trans_type,
+    (s.base_salary * x.percentage) / 100 AS amount
+FROM salary s
+CROSS JOIN (
+    SELECT deduction AS trans_type, percentage FROM deduction
+    UNION 
+    SELECT income AS trans_type, percentage FROM income
+) x;
+
+--- using case when
+select emp_name, sum (case when trns_type = 'Allowance' then amount else 0 end ) as Allowance,
+ sum (case when trns_type = 'Basic' then amount else 0 end ) as Basic,
+ sum (case when trns_type = 'Others' then amount else 0 end ) as Others,
+ SUM(CASE WHEN trns_type IN ('Basic', 'Allowance', 'Others') THEN amount ELSE 0 END) AS Gross,
+ sum (case when trns_type = 'Insurance' then amount else 0 end ) as Insurance,
+ sum (case when trns_type = 'Health' then amount else 0 end ) as Health,
+ sum (case when trns_type = 'House' then amount else 0 end ) as House,
+ sum(case when trns_type in ('Insurance','Health','House') then amount else 0 end ) as total_deduction,
+ SUM(CASE WHEN trns_type IN ('Basic', 'Allowance', 'Others') THEN amount ELSE 0 END) 
+    - SUM(CASE WHEN trns_type IN ('Insurance', 'Health', 'House') THEN amount ELSE 0 END) AS Net_Salary
+from emp_transaction
+group by emp_id, emp_name
+
+---- Using pivot
+
+SELECT emp_name, 
+       Allowance, 
+       Basic, 
+       Others, 
+       (Basic + Allowance + Others) AS Gross,  -- Gross Calculation
+       Insurance, 
+       Health, 
+       House, 
+       (Insurance + Health + House) AS total_deduction,  -- Total Deduction Calculation
+       (Basic + Allowance + Others) - (Insurance + Health + House) AS Net_Salary  -- Net Salary Calculation
+FROM (
+    -- Source Data
+    SELECT emp_name, trns_type, amount
+    FROM emp_transaction
+) src
+PIVOT (
+    SUM(amount) 
+    FOR trns_type IN (Basic, Allowance, Others, Insurance, Health, House)
+) AS pvt;
+
 ```

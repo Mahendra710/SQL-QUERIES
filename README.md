@@ -5,6 +5,7 @@
 - [Query-3](#Query-3)
 - [Query-4](#Query-4)
 - [Query-5](#Query-5)
+- [Query-6](#Query-6)
 
 ## Query-1 
 ### PROBLEM STATEMENT
@@ -328,5 +329,50 @@ PIVOT (
     SUM(amount) 
     FOR trns_type IN (Basic, Allowance, Others, Insurance, Health, House)
 ) AS pvt;
+
+```
+
+## Query-6
+### PROBLEM STATEMENT
+- You are given a table having the marks of one student in every test. 
+- You have to output the tests in which the student has improved his performance. 
+- For a student to improve his performance he has to score more than the previous test.
+- Provide 2 solutions, one including the first test score and second excluding it.
+```
+drop table if exists  student_tests;
+create table student_tests
+(
+	test_id		int,
+	marks		int
+);
+insert into student_tests values(100, 55);
+insert into student_tests values(101, 55);
+insert into student_tests values(102, 60);
+insert into student_tests values(103, 58);
+insert into student_tests values(104, 40);
+insert into student_tests values(105, 50);
+
+select * from student_tests;
+```
+
+![image](https://github.com/user-attachments/assets/9d3658af-89dc-4a82-9e68-de0f595a2ab1)   ![image](https://github.com/user-attachments/assets/0e881001-56d6-4b78-9588-b71d7b0bfda1)
+ 
+
+### SOLUTION
+
+```
+--- First Output
+select test_id, marks
+from (
+select test_id, marks, lag(marks,1,0) over(order by test_id) as privious_marks
+from student_tests) x
+where x.marks > x.privious_marks
+
+-- second output
+select test_id, marks
+from (
+select test_id, marks, lag(marks,1,marks) over(order by test_id) as privious_marks
+from student_tests) x
+where x.marks > x.privious_marks
 
 ```

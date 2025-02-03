@@ -6,7 +6,8 @@
 - [Query-4](#Query-4)
 - [Query-5](#Query-5)
 - [Query-6](#Query-6)
-
+- [Query-7](#Query-7)
+  
 ## Query-1 
 ### PROBLEM STATEMENT
 - For pairs of brands in the same year (e.g. apple/samsung/2020 and samsung/apple/2020) 
@@ -375,4 +376,50 @@ select test_id, marks, lag(marks,1,marks) over(order by test_id) as privious_mar
 from student_tests) x
 where x.marks > x.privious_marks
 
+```
+
+## Query-7
+
+### PROBLEM STATEMENT
+- In the given input table DAY_INDICATOR field indicates the day of the week with the first character being Monday, followed by Tuesday and so on.
+- Write a query to filter the dates column to showcase only those days where day_indicator character for that day of the week is 1
+- 
+![image](https://github.com/user-attachments/assets/5e0d6519-7438-4e5a-a324-eb62f2c70b3f)   ![image](https://github.com/user-attachments/assets/de6bce6c-d163-4f69-905c-fc373c81969b)
+
+
+```
+-- Micrososft SQL Server
+drop table if exists Day_Indicator;
+create table Day_Indicator
+(
+	Product_ID 		varchar(10),	
+	Day_Indicator 	varchar(7),
+	Dates			date
+);
+insert into Day_Indicator values ('AP755', '1010101', CONVERT(DATE,'04-Mar-2024', 102));
+insert into Day_Indicator values ('AP755', '1010101', CONVERT(DATE,'05-Mar-2024', 102));
+insert into Day_Indicator values ('AP755', '1010101', CONVERT(DATE,'06-Mar-2024', 102));
+insert into Day_Indicator values ('AP755', '1010101', CONVERT(DATE,'07-Mar-2024', 102));
+insert into Day_Indicator values ('AP755', '1010101', CONVERT(DATE,'08-Mar-2024', 102));
+insert into Day_Indicator values ('AP755', '1010101', CONVERT(DATE,'09-Mar-2024', 102));
+insert into Day_Indicator values ('AP755', '1010101', CONVERT(DATE,'10-Mar-2024', 102));
+insert into Day_Indicator values ('XQ802', '1000110', CONVERT(DATE,'04-Mar-2024', 102));
+insert into Day_Indicator values ('XQ802', '1000110', CONVERT(DATE,'05-Mar-2024', 102));
+insert into Day_Indicator values ('XQ802', '1000110', CONVERT(DATE,'06-Mar-2024', 102));
+insert into Day_Indicator values ('XQ802', '1000110', CONVERT(DATE,'07-Mar-2024', 102));
+insert into Day_Indicator values ('XQ802', '1000110', CONVERT(DATE,'08-Mar-2024', 102));
+insert into Day_Indicator values ('XQ802', '1000110', CONVERT(DATE,'09-Mar-2024', 102));
+insert into Day_Indicator values ('XQ802', '1000110', CONVERT(DATE,'10-Mar-2024', 102));
+```
+
+### SOLUTION
+```
+SET DateFirst 1
+
+select Product_ID, Day_Indicator, Dates
+from (
+      select *,
+      case when SUBSTRING( Day_Indicator,DATEPART ( WEEKDAY,Dates),1) =1 then 1 else 0 end as x
+      from Day_Indicator) as t
+where x= 1
 ```

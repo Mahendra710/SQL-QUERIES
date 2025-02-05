@@ -8,6 +8,7 @@
 - [Query-6](#Query-6)
 - [Query-7](#Query-7)
 - [Query-8](#Query-8)
+- [Query-9](#Query-9)
   
   
 ## Query-1 
@@ -467,4 +468,22 @@ with cte as (
 
 select row_id, FIRST_VALUE(job_role) over(partition by job_segment order by row_id) as job_role, skills
 from cte
+```
+
+## Query-9
+### PROBLEM STATEMENT
+- Write an sql query to merge products per customer for each day as shown in expected output.
+- 
+![image](https://github.com/user-attachments/assets/ed386618-1719-4b70-a111-1d806a74adc8)       ![image](https://github.com/user-attachments/assets/2cc480b6-e461-44df-ba84-6ff10bc335a8)
+
+
+### SOLUTION
+```
+select dates, cast(product_id as varchar) as products
+from orders
+union
+select dates, STRING_AGG( product_id, ',') as products
+from orders
+group by dates,customer_id
+order by dates, products
 ```

@@ -9,6 +9,7 @@
 - [Query-7](#Query-7)
 - [Query-8](#Query-8)
 - [Query-9](#Query-9)
+- [Query-10](#Query-10)
   
   
 ## Query-1 
@@ -486,4 +487,29 @@ select dates, STRING_AGG( product_id, ',') as products
 from orders
 group by dates,customer_id
 order by dates, products
+```
+
+## Query-10
+### PROBLEM STATEMENT
+
+![Video_Q10_Problem_Statement](https://github.com/user-attachments/assets/268a7bb8-49b0-4f89-a411-7c80c3bb9c05)
+
+### SOLUTION
+
+```
+with t as (select client,auto,repair_date, MAX(case when indicator= 'level' then value end) as level,MAX( case when indicator ='velocity' then value end) as velocity
+from auto_repair
+group by client,auto,repair_date
+),
+t1 as (
+select velocity,level, count (*) as count1
+from t
+group by level,velocity
+)
+select velocity, COALESCE(Max(case when level= 'good' then count1 end),0) as good,
+COALESCE(Max(case when level= 'regular' then count1 end),0) as regular,
+COALESCE(Max(case when level= 'wrong' then count1 end),0) as wrong
+from t1
+group by velocity
+order by velocity
 ```

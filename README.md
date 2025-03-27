@@ -10,7 +10,7 @@
 - [Query-8](#Query-8)
 - [Query-9](#Query-9)
 - [Query-10](#Query-10)
-  
+- [Query-11](#Query-11)
   
 ## Query-1 
 ### PROBLEM STATEMENT
@@ -512,4 +512,36 @@ COALESCE(Max(case when level= 'wrong' then count1 end),0) as wrong
 from t1
 group by velocity
 order by velocity
+```
+
+## Query-11
+### PROBLEM STATEMENT
+![image](https://github.com/user-attachments/assets/0d27cd98-d970-447f-9627-6d3bdc11f9ae)
+
+### SOLUTION
+```
+WITH CTE AS (
+    SELECT 
+        hotel,
+        year, 
+        rating, 
+        CAST(ROUND(AVG(rating) OVER (
+            PARTITION BY hotel 
+            ORDER BY year 
+            ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+        ), 2) AS DECIMAL(10,2)) AS overall_hotel_avg
+    FROM hotel_ratings
+),
+t as (SELECT 
+    hotel,
+    year,
+    rating,
+    overall_hotel_avg,
+    ABS(rating - overall_hotel_avg) AS rating_deviation, RANK() over (partition by hotel order by ABS(rating - overall_hotel_avg) desc) as rnk
+FROM CTE
+)
+select hotel, year, rating
+from t 
+where rnk >1
+order by hotel,year
 ```

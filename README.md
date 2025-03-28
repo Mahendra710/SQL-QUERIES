@@ -12,6 +12,7 @@
 - [Query-10](#Query-10)
 - [Query-11](#Query-11)
 - [Query-12](#Query-12)
+- [Query-13](#Query-13)
 
 ## Query-1 
 ### PROBLEM STATEMENT
@@ -580,3 +581,20 @@ GROUP BY team
 ORDER BY team;
 
 ``
+
+## Query-13
+### PROBLEM STATEMENT
+![image](https://github.com/user-attachments/assets/42277cd7-c5dc-4543-b90f-8d86e11d3447)
+
+### SOLUTION
+```
+with cte as( 
+SELECT manager,count(*) as no_of_employees
+FROM EMPLOYEE_MANAGERS
+group by manager
+)
+select em.name as Manager, ct.no_of_employees
+from employee_managers em
+join cte ct on ct.manager= em.id
+order by ct.no_of_employees desc
+```

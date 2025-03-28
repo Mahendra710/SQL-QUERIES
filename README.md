@@ -11,7 +11,8 @@
 - [Query-9](#Query-9)
 - [Query-10](#Query-10)
 - [Query-11](#Query-11)
-  
+- [Query-12](#Query-12)
+
 ## Query-1 
 ### PROBLEM STATEMENT
 - For pairs of brands in the same year (e.g. apple/samsung/2020 and samsung/apple/2020) 
@@ -545,3 +546,37 @@ from t
 where rnk >1
 order by hotel,year
 ```
+
+## Query-12
+### PROBLEM STATEMENT
+![image](https://github.com/user-attachments/assets/917f3a63-fdb1-4f20-96df-b7ba4769e9bf)
+
+### SOLUTION
+```
+WITH cte AS (
+    -- Step 1: Assign team numbers to direct reports of Elon
+    SELECT 
+        employee, 
+        manager,
+        ROW_NUMBER() OVER (ORDER BY employee) AS team
+    FROM company 
+    WHERE manager = (SELECT employee FROM company WHERE manager IS NULL) 
+
+    UNION ALL
+
+    -- Step 2: Recursively assign employees to the same team as their manager
+    SELECT 
+        e.employee, 
+        c.employee AS manager,
+        c.team AS team
+    FROM cte c
+    INNER JOIN company e ON c.employee = e.manager
+)
+SELECT 
+    'Team ' + CAST(team AS VARCHAR) AS TEAMS, 
+    (SELECT employee FROM company WHERE manager IS NULL) +',' + STRING_AGG(employee, ', ') AS MEMBERS
+FROM cte
+GROUP BY team
+ORDER BY team;
+
+``

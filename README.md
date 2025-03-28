@@ -579,7 +579,7 @@ SELECT
 FROM cte
 GROUP BY team
 ORDER BY team;
-``
+```
 
 ## Query-13
 
@@ -587,8 +587,8 @@ ORDER BY team;
 ![image](https://github.com/user-attachments/assets/42277cd7-c5dc-4543-b90f-8d86e11d3447)
 
 ### SOLUTION
-```
-with cte as( 
+
+```with cte as( 
 SELECT manager,count(*) as no_of_employees
 FROM EMPLOYEE_MANAGERS
 group by manager

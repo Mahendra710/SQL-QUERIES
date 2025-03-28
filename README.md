@@ -579,10 +579,10 @@ SELECT
 FROM cte
 GROUP BY team
 ORDER BY team;
-
 ``
 
 ## Query-13
+
 ### PROBLEM STATEMENT
 ![image](https://github.com/user-attachments/assets/42277cd7-c5dc-4543-b90f-8d86e11d3447)
 
